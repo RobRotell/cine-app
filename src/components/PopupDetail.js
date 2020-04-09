@@ -19,19 +19,24 @@ class PopupDetail extends React.Component {
 	}
 
 
-	fetchMovieDetailsById = async id => {
-		this.state.isLoading = true;
-		this.state.activeMovieId = id;
+	fetchMovieDetailsById = id => {
+		this.setState({
+			isLoading: 		true,
+			isLoaded: 		false,
+			activeMovieId: 	id,
+			activeMovie: 	null
+		});
 
 		// fetch movie details
-		const movie = await wpIntegration.getMovie( id );
-		
-		// show movie details
-		this.setState({
-			isLoading: 		false,
-			isLoaded: 		true,
-			activeMovie: 	movie
-		});
+		wpIntegration
+			.getMovie( id )
+			.then( movie => {
+				this.setState({
+					isLoading: 		false,
+					isLoaded: 		true,
+					activeMovie: 	movie
+				});
+			});
 	}
 
 

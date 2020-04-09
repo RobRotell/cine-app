@@ -79,14 +79,17 @@ class PopupAdder extends React.Component {
 	}
 
 
-	getMatchesFromWp = async value => {
-		const self = this,
-			matches = await wpIntegration.searchByTitle( value );
+	getMatchesFromWp = value => {
+		const self = this;
 
-		this.setState({
-			isSearching: 	false,
-			matches: 		matches
-		})
+		wpIntegration
+			.searchByTitle( value )
+			.then( matches => {
+				self.setState({
+					isSearching: 	false,
+					matches: 		matches
+				})
+			});
 	}
 
  
@@ -128,9 +131,6 @@ PopupAdder.propTypes = {
 	isActive: 			PropTypes.bool.isRequired,
 	closeAdder: 		PropTypes.func.isRequired,
 	handleAddClick: 	PropTypes.func.isRequired
-	//inputChange: 		PropTypes.func.isRequired,
-	// currentInput: 		PropTypes.string.isRequired,
-	// matches: 			PropTypes.array.isRequired,
 }
 
 

@@ -21,6 +21,33 @@
 		transform: translate3d( 0, 0, 0 );
 	}
 
+	&.is-loading:before,
+	&.is-loading:after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		display: block;
+		border: remCalc( 5 ) solid transparent;
+		border-radius: 50%;
+	}
+
+	&.is-loading:before {
+		width: remCalc( 75 );
+		height: remCalc( 75 );
+		border-top-color: $purpleViv;
+		border-left-color: $purpleViv;
+		animation: loadSpin 1s linear infinite;
+	}
+
+	&.is-loading:after {
+		width: remCalc( 60 );
+		height: remCalc( 60 );
+		border-top-color: $purpleLig;
+		border-left-color: $purpleLig;
+		animation: loadSpin .8s linear infinite;
+	}		
+
 	&__close {
 		position: absolute;
 		top: 25px;

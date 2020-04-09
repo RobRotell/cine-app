@@ -16,13 +16,8 @@ class App extends Component {
 
 	state = {
 		adderActive: 	false,
-		adderQuery: 	'',
-		adderMatches: 	[],
-		adderInputting: false,
-		adderTimeout: 	null,
-		adderSearching:	false,
 
-		popupActive: 	false,
+		detailActive: 	false,
 		activeMovieId: 	0,
 		
 		showWatched: 	true,
@@ -55,98 +50,75 @@ class App extends Component {
 
 	handleTabClick = e => {
 		this.setState({
-			showWatched: ( e.currentTarget.value === 'watched' )
+			adderActive: 	false,
+			detailActive: 	false,
+			activeMovieId: 	0,
+			showWatched: 	( e.currentTarget.value === 'watched' )
 		})
 	}
 
 
-	handleAdderClick = e => {
+	handleBtnAdderClick = e => {
 		this.setState({
 			adderActive: 	true,
-			userSearching: 	true
 		});
 	}
 
 
-	handleMovieClick = async id => {
+	handleWatchedMovieClick = id => {
 		this.setState({
-			popupActive: 	true,
+			detailActive: 	true,
 			activeMovieId: 	id
 		});
 	}
 
 
+	handleToWatchMovieClick = id => {
+		console.log( id );
+	}	
+
+
 	handleClosePopupDetail = e => {
 		this.setState({
-			popupActive: 	false,
+			detailActive: 	false,
 			activeMovieId: 	0	
 		})
 	}
 
 
-	handleCloseAdder = e => {
+	handleClosePopupAdder = e => {
 		this.setState({
 			adderActive: false
 		})
 	}
 
-	
-	handleAdderInput = e => {
-		const self = this,
-			value = e.currentTarget.value;
 
-		clearTimeout( self.state.adderTimeout );
-		if( value.length > 5 ) {
-			self.state.adderTimeout = setTimeout( () => {
-
-				// for loading animation
-				this.setState({
-					adderSearching: true
-				})
-
-				self.findAdderMatches( value );
-			}, 500 );
-		}
-	}
-
-
-	findAdderMatches = async value => {
-		const matches = await wpIntegration.searchByTitle( value );
-
-		this.setState({
-			adderSearching: false,
-			adderMatches: 	matches,
-			adderQuery: 	value
-		});
-	}
-
-
-	handleAddClick = async ( id, action ) => {
-		const newMovie = await wpIntegration.addMovie( id, action );
-
-		if( action === 'toWatch' ) {
-			this.setState({
-				popupActive: 	false,
-				adderActive: 	false,				
-				showWatched: 	false,
-				adderMatches: 	[],
-				moviesToWatch: 	[
-					newMovie,
-					...this.state.moviesToWatch
-				]
-			})
-		} else {
-			this.setState({
-				popupActive: 	false,
-				adderActive: 	false,				
-				showWatched: 	true,
-				adderMatches: 	[],				
-				moviesWatched: 	[
-					newMovie,
-					...this.state.moviesWatched
-				]
+	handleAddClick = ( id, action ) => {
+		wpIntegration
+			.addMovie( id, action )
+			.then( newMovie => {
+				if( action === 'toWatch' ) {
+					this.setState({
+						detailActive: 	false,
+						adderActive: 	false,
+						showWatched: 	false,
+						moviesToWatch: 	[
+							newMovie,
+							...this.state.moviesToWatch
+						]
+					})
+				} else {
+					this.setState({
+						detailActive: 	false,
+						adderActive: 	false,
+						showWatched: 	true,
+						moviesWatched: 	[
+							newMovie,
+							...this.state.moviesWatched
+						]
+					});
+				}
 			});
-		}
 	}
 
 
@@ -160,28 +132,24 @@ class App extends Component {
 				<Movielist 
 					display={ this.state.showWatched }
 					movies={ this.state.moviesWatched } 
-					handleMovieClick={ this.handleMovieClick }
+					handleMovieClick={ this.handleWatchedMovieClick }
 				/>
 				<Movielist 
 					display={ !this.state.showWatched }
 					movies={ this.state.moviesToWatch }
-					// handleMovieClick={ this.handleToWatchMovieClick } 
+					handleMovieClick={ this.handleToWatchMovieClick } 
 				/>
 				<BtnAdder 
-					handleAdderClick={ this.handleAdderClick }
+					handleBtnAdderClick={ this.handleBtnAdderClick }
 				/>
 				<PopupDetail
-					isActive={ this.state.popupActive }
+					isActive={ this.state.detailActive }
 					activeMovieId={ this.state.activeMovieId }
 					closePopup={ this.handleClosePopupDetail }
 				/>
 				<PopupAdder
 					isActive={ this.state.adderActive }
-					adderSearching={ this.state.adderSearching }
-					closeAdder={ this.handleCloseAdder }
-					inputChange={ this.handleAdderInput }
-					currentInput={ this.state.adderQuery }
-					matches={ this.state.adderMatches }
+					closeAdder={ this.handleClosePopupAdder }
 					handleAddClick={ this.handleAddClick }
 				/>
 			</main>

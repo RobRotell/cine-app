@@ -7,7 +7,7 @@ const BtnAdder = props => {
 	return (
 		<button 
 			className="adder"
-			onClick={ props.handleAdderClick }
+			onClick={ props.handleBtnAdderClick }
 		>
 		</button>
 	)
@@ -16,7 +16,7 @@ const BtnAdder = props => {
 
 
 BtnAdder.propTypes = {
-	handleAdderClick: PropTypes.func.isRequired
+	handleBtnAdderClick: PropTypes.func.isRequired
 }
 
 

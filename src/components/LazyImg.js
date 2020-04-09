@@ -18,7 +18,6 @@ class LazyImg extends React.Component {
 		document.lazyLoadInstance.update();
 	}
 
-	// Update lazyLoad after rerendering of every image
 	componentDidUpdate = () => {
 		document.lazyLoadInstance.update();
 	}	
