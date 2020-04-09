@@ -1,0 +1,12 @@
+.icon {
+
+	&--star {
+		color: $grayText;
+		@include simpleTransition;
+
+		&--filled {
+			color: $purpleLig;
+		}
+	}
+
+}

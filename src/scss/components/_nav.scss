@@ -1,0 +1,95 @@
+.nav {
+	position: sticky;
+	top: 0;
+
+	display: flex;
+	align-content: center;
+	height: remCalc( 85 );
+	margin-bottom: remCalc( 40 );
+	
+	background-color: rgba( $grayDark, .95 );
+	z-index: 1000;
+
+	@include pageSidePadding;
+
+	&__btn {
+		margin-right: remCalc( 40 );
+		padding: 0;
+
+		font-size: remCalc( 20 );
+		text-shadow: 0 0 0 rgba( $grayText, .5 );
+		color: $grayText;
+
+		transition: all .5s;
+
+		&--active,
+		&:hover {
+			color: $white;
+			text-shadow: 0 0 remCalc( 10 ) rgba( $white, .5 );
+
+		}
+	}
+
+
+	&__search {
+		display: flex;
+		flex-grow: 1;
+		// align-self: flex-end;
+		align-items: center;
+		margin-left: auto;
+
+		&__input {
+			position: relative; 
+			width: 100%;
+			max-width: remCalc( 300 );
+			margin-left: auto;
+			margin-right: remCalc( 24 );
+			padding: remCalc( 10 ) 0;
+			
+			text-align: right;
+			color: white;
+			background-color: transparent;
+			border: remCalc( 2 ) solid transparent;
+
+			@include simpleTransition;
+
+			&.is-active {
+				border-bottom-color: $purpleLig;
+			}
+		}
+
+		&__btn {
+			$btn: &;
+
+			position: relative;
+
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+
+			width: remCalc( 32 );
+			height: remCalc( 32 );
+
+			.icon {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate( -50%, -50% );
+				
+				svg {
+					width: remCalc( 20 );
+					height: remCalc( 20 );
+					fill: $grayText;
+					@include simpleTransition;
+				}
+			}
+
+			&:hover,
+			&.is-active {
+				svg {
+					fill: white;
+				}
+			}
+		}
+	}
+}

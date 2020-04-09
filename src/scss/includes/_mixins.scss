@@ -1,0 +1,34 @@
+@mixin simpleTransition( $duration: .3s ) {
+	transition: all $duration;
+	backface-visibility: hidden;
+}
+
+@mixin purpleHover {
+	& {
+		background-color: $purpleLig;
+		@include simpleTransition;
+	}
+
+	&:hover {
+		background-color: $purpleViv;
+	}
+}
+
+@mixin pageSidePadding {
+
+	@media( min-width: $tabletWidthMin ) {
+		padding-left: $sidePaddingMobile;
+		padding-right: $sidePaddingMobile;
+	}
+		
+	@media( min-width: $tabletWidthMin ) {
+		padding-left: $sidePaddingTablet;
+		padding-right: $sidePaddingTablet;		
+	}
+	
+	@media( min-width: $desktopWidthMin ) {
+		padding-left: $sidePaddingDesktop;
+		padding-right: $sidePaddingDesktop;		
+	}	
+
+}

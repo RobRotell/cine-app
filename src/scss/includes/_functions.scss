@@ -1,0 +1,8 @@
+@function remCalc( $px ) {
+    @return ( $px / 16 ) + rem;
+}
+
+@function propWidth( $width, $pxPadding ) {
+    $padding: remCalc( $pxPadding );
+    @return calc( $width% - $padding );
+}

@@ -1,0 +1,101 @@
+.result {
+	$result: &;
+	display: flex;
+	margin-bottom: remCalc( 40 );
+	padding-bottom: remCalc( 30 );
+	padding-right: remCalc( 20 );
+
+	border-bottom: remCalc( 1 ) solid rgba( $grayText, .25 );
+
+	&__img {
+		align-self: flex-start;
+		width: remCalc( 154 );
+		height: auto;
+		margin-right: remCalc( 30 );
+
+		&--missing {
+			height: remCalc( 220 );
+			background-color: $grayMed;
+		}
+	}
+	
+	$width: remCalc( 174 );
+	&__content {
+		display: flex;
+		flex-direction: column;
+		width: calc( 100% - #{$width} );
+	}
+
+	&__title {
+		position: relative;
+		margin-top: 0;
+		margin-bottom: remCalc( 20 );
+		padding-bottom: remCalc( 15 );
+		font-weight: $fontLight;
+		font-size: remCalc( 38 );
+		line-height: 1;
+		color: white;
+
+		&:after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			display: block;
+			width: remCalc( 70 );
+			height: remCalc( 2 );
+			background-color: $purpleLig;
+		}
+	}
+
+	&__year {
+		margin-left: remCalc( 20 );
+		font-size: remCalc( 24 );
+		color: $grayText;
+	}
+
+	&__desc {
+		margin-top: remCalc( 5 );
+		font-weight: $fontLight;
+		font-size: remCalc( 16 );
+		line-height: 1.6; 
+	}
+
+	&__btns {
+		display: flex;
+		margin-top: auto;
+		// padding-top: remCalc( 16 );
+	}
+
+	&__btn {
+		width: remCalc( 45 );
+		height: remCalc( 45 );
+		margin-right: remCalc( 18 );
+		padding: remCalc( 12 );
+
+		background-color: $purpleLig;
+		border-radius: 50%;
+
+		opacity: 0;
+		visibility: hidden;		
+
+		@include simpleTransition;
+
+		#{$result}:hover & {
+			opacity: 1;
+			visibility: visible;
+		}
+
+		&:hover {
+			background-color: $purpleViv;
+		}			
+
+		&__icon {
+			display: block;
+
+			& svg {
+				fill: $white;
+			}
+		}
+	}
+
+}
