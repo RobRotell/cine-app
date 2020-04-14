@@ -15,6 +15,8 @@ body {
 }
 
 body {
+    padding-bottom: remCalc( 40 );
+
     font-family: 'Source Sans Pro', sans-serif;
 	font-weight: $fontReg;
     font-size: remCalc( 16 );
@@ -22,6 +24,10 @@ body {
     
 	color: $white;
 	background-color: $grayMed;
+}
+
+#root {
+    min-height: 100vh;
 }
 
 i {

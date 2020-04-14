@@ -94,8 +94,6 @@ class PopupAdder extends React.Component {
 
  
 	render() {
-
-		// show popup?
 		let classes = [ 'popup' ];
 		if( this.props.isActive === true )
 			classes.push( 'is-active' );	

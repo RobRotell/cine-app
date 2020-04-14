@@ -14,7 +14,6 @@ class Movielist extends React.PureComponent {
 		return (
 			
 			<section className={ classes.join( ' ' ) }>
-				{ }
 				{ this.props.movies.map( movie => {
 					if( movie.to_watch ) {
 						return (
@@ -26,7 +25,7 @@ class Movielist extends React.PureComponent {
 								director={ movie.director }
 								toWatch={ movie.to_watch }
 								backdrop={ movie.backdrop }
-								handleMovieClick={ () => this.props.handleMovieClick( movie.id ) }
+								handleMovieClick={ this.props.handleMovieClick }
 							/>
 						)						
 					} else {

@@ -9,13 +9,17 @@
 	width: 100%;
 	height: calc( 100% - #{$offset} );
 	max-width: remCalc( 680 );
-	padding: remCalc( 80 ) remCalc( 35 ) remCalc( 80 ) remCalc( 80 );
+	padding: remCalc( 80 ) remCalc( 35 ) remCalc( 35 ) remCalc( 35 );
 
 	background-color: rgba( $grayDark, .95 );
 	transform: translate3d( 100%, 0, 0 );
 	z-index: 2000;
 
 	@include simpleTransition;
+
+	@media( min-width: $tabletWidthMin ) {
+		padding: remCalc( 80 ) remCalc( 35 ) remCalc( 80 ) remCalc( 80 );
+	}		
 	
 	&.is-active {
 		transform: translate3d( 0, 0, 0 );
@@ -81,17 +85,29 @@
 		height: 100%;
 		overflow-y: scroll;
 
+		@media( min-width: $tabletWidthMin ) {
+			padding-right: remCalc( 32 );
+		}			
+
 		&__img {
 			display: block;
 			width: auto;
-			height: remCalc( 450 );
+			height: remCalc( 250 );
+
+			@media( min-width: $tabletWidthMin ) {
+				height: remCalc( 450 );
+			}				
 		}
 			
 		&__headline {
 			margin: remCalc( 40 ) 0 remCalc( 20 );
 			font-weight: $fontExLight;
-			font-size: remCalc( 60 );
+			font-size: remCalc( 40 );
 			line-height: 1;
+			
+			@media( min-width: $tabletWidthMin ) {
+				font-size: remCalc( 60 );
+			}	
 		}
 
 		&__year {
@@ -191,15 +207,4 @@
 		}
 	}
 
-}
-
-
-@keyframes loadSpin {
-	from {
-		transform: translate( -50%, -50% ) rotate( 0 );
-	}
-
-	to {
-		transform: translate( -50%, -50% ) rotate( 360deg );
-	}
 }

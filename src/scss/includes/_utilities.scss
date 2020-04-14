@@ -3,3 +3,14 @@
 
 .show { display: block; }
 .show-hard { display: block !important; }
+
+
+@keyframes loadSpin {
+	from {
+		transform: translate( -50%, -50% ) rotate( 0 );
+	}
+
+	to {
+		transform: translate( -50%, -50% ) rotate( 360deg );
+	}
+}

@@ -1,5 +1,6 @@
 .result {
 	$result: &;
+	position: relative;
 	display: flex;
 	margin-bottom: remCalc( 40 );
 	padding-bottom: remCalc( 30 );
@@ -95,6 +96,16 @@
 			& svg {
 				fill: $white;
 			}
+		}
+	}
+
+
+	&.is-loading {
+		@include simpleLoading;
+
+		#{$result}__img,
+		#{$result}__content {
+			opacity: .15;
 		}
 	}
 

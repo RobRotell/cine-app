@@ -10,7 +10,7 @@ class Movie extends React.Component {
 			title = el.querySelector('.block__title'),
 			shift = el.querySelector('.block__extra').offsetHeight;
 
-		title.style.transform = `translate3d( 0, -${shift}px, 0 )`;
+		title.style.transform = `scale( .66 ) translate3d( 0, -${shift}px, 0 )`;
 	}
 
 	handleMouseLeave = e => {

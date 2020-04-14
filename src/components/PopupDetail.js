@@ -57,8 +57,8 @@ class PopupDetail extends React.Component {
 			if( movie.hasOwnProperty( 'box_office' ) && this.isValidValue( movie.box_office ) )
 				details[ 'Box Office' ] = movie.box_office;	
 				
-			if( movie.hasOwnProperty( 'website' ) && this.isValidValue( movie.website ) )
-				details.Website = movie.website;
+			// if( movie.hasOwnProperty( 'website' ) && this.isValidValue( movie.website ) )
+			// 	details.Website = movie.website;
 			
 			return (
 				<article className="watched">

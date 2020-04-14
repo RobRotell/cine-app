@@ -15,11 +15,8 @@
 }
 
 @mixin pageSidePadding {
-
-	@media( min-width: $tabletWidthMin ) {
-		padding-left: $sidePaddingMobile;
-		padding-right: $sidePaddingMobile;
-	}
+	padding-left: $sidePaddingMobile;
+	padding-right: $sidePaddingMobile;
 		
 	@media( min-width: $tabletWidthMin ) {
 		padding-left: $sidePaddingTablet;
@@ -30,5 +27,34 @@
 		padding-left: $sidePaddingDesktop;
 		padding-right: $sidePaddingDesktop;		
 	}	
+}
 
+
+@mixin simpleLoading {
+	&:before,
+	&:after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		display: block;
+		border: remCalc( 5 ) solid transparent;
+		border-radius: 50%;
+	}
+
+	&:before {
+		width: remCalc( 75 );
+		height: remCalc( 75 );
+		border-top-color: $purpleViv;
+		border-left-color: $purpleViv;
+		animation: loadSpin 1s linear infinite;
+	}
+
+	&:after {
+		width: remCalc( 60 );
+		height: remCalc( 60 );
+		border-top-color: $purpleLig;
+		border-left-color: $purpleLig;
+		animation: loadSpin .8s linear infinite;
+	}
 }

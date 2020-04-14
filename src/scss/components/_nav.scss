@@ -31,65 +31,54 @@
 	}
 
 
-	&__search {
-		display: flex;
-		flex-grow: 1;
-		// align-self: flex-end;
-		align-items: center;
+	&__adder {
+		position: relative;
+		display: block;
 		margin-left: auto;
+		align-self: center;
 
-		&__input {
-			position: relative; 
-			width: 100%;
-			max-width: remCalc( 300 );
-			margin-left: auto;
-			margin-right: remCalc( 24 );
-			padding: remCalc( 10 ) 0;
-			
-			text-align: right;
-			color: white;
-			background-color: transparent;
-			border: remCalc( 2 ) solid transparent;
+		width: remCalc( 35 );
+		height: remCalc( 35 );
+		border-radius: 50%;
 
-			@include simpleTransition;
+		@include purpleHover;
 
-			&.is-active {
-				border-bottom-color: $purpleLig;
-			}
+		@media( min-width: $tabletWidthMin ) {
+			width: remCalc( 50 );
+			height: remCalc( 50 );
+		}			
+
+		&:before,
+		&:after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			display: block;
+			background-color: white;
+			transform: translate( -50%, -50% );
+			border-radius: remCalc( 3 );
 		}
+	
+		&:before {
+			width: remCalc( 1.5 );
+			height: remCalc( 15 );
 
-		&__btn {
-			$btn: &;
-
-			position: relative;
-
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-
-			width: remCalc( 32 );
-			height: remCalc( 32 );
-
-			.icon {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate( -50%, -50% );
-				
-				svg {
-					width: remCalc( 20 );
-					height: remCalc( 20 );
-					fill: $grayText;
-					@include simpleTransition;
-				}
-			}
-
-			&:hover,
-			&.is-active {
-				svg {
-					fill: white;
-				}
-			}
+			@media( min-width: $tabletWidthMin ) {
+				width: remCalc( 2.5 );
+				height: remCalc( 20 );
+			}				
 		}
+		
+		&:after {
+			width: remCalc( 15 );
+			height: remCalc( 1.5 );
+
+			@media( min-width: $tabletWidthMin ) {
+				width: remCalc( 20 );
+				height: remCalc( 2.5 );
+			}				
+		}			
 	}
+
 }

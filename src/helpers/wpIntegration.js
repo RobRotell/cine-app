@@ -65,7 +65,42 @@ const wpIntegration = {
 				body: 	formData
 			}
 		).then( response => response.json() );
+	},
+
+
+	setMovieAsWatched( id, status ) {
+		const params = new URLSearchParams();
+		params.append( 'auth', this.getAuth() );
+		params.append( 'id', id );
+		params.append( 'status', status );
+
+		return fetch(
+			`${this.apiUrl}/set-movie-as-watched`,
+			{
+				method:		'PUT',
+				headers: 	{ 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: 		params
+			}
+		).then( response => response.json() );
+	},
+
+
+	deleteMovie( id ) {
+		const params = new URLSearchParams();
+		params.append( 'auth', this.getAuth() );
+		params.append( 'id', id );
+
+		return fetch(
+			`${this.apiUrl}/delete-movie`,
+			{
+				method:		'DELETE',
+				headers: 	{ 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: 		params
+			}
+		).then( response => response.json() );
 	}
+
+
 
 }
 

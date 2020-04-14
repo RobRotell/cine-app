@@ -28,23 +28,6 @@
 		cursor: pointer;
 	}
 
-	&.block--to-watch {
-		flex-direction: column;
-
-		&:hover {
-			.block__btns {
-				width: 100%;
-				justify-content: flex-end;
-				margin-bottom: auto;
-			}
-
-			.block__btn {
-				opacity: 1;
-				visibility: visible;
-			}
-		}
-	}
-
 	&:before,
 	&:after {
 		content: '';
@@ -68,6 +51,26 @@
 		background: rgba(0,0,0,.75);
 		@include simpleTransition;
 	}
+
+	&.is-loading {
+		@include simpleLoading;
+
+		&:before {
+			background: none;
+		}
+
+		&:after {
+			opacity: 1;
+			visibility: visible;
+			background: none;
+		}
+
+		#{$block}__btns,
+		#{$block}__text,
+		#{$block}__img {
+			opacity: .15;
+		}
+	}
 	
 	&:hover:before {
 		opacity: 0;
@@ -83,6 +86,7 @@
 	&__text {
 		display: flex;
 		width: 100%;
+		margin-top: auto;
 		padding: remCalc( 30 );
 
 		flex-direction: column;
@@ -96,13 +100,18 @@
 		margin: auto remCalc( 0 ) 0;
 		padding-bottom: 0;
 		
-		font-size: remCalc( 60 );
+		font-size: remCalc( 40 );
 		font-weight: $fontExLight;
 		line-height: 1;
 
 		transform-origin: left center;
 
 		@include simpleTransition;
+
+		@media( min-width: $tabletWidthMin ) {
+			width: 100%;
+			font-size: remCalc( 60 );
+		}		
 
 		&:after {
 			content: '';
@@ -123,10 +132,8 @@
 		}
 
 		#{$block}:hover & { 
-			max-width: 75%;
 			margin-bottom: remCalc( 16 );
 			padding-bottom: remCalc( 16 );
-			font-size: remCalc( 50 );
 
 			&:after {
 				opacity: 1;
@@ -283,5 +290,43 @@
 		@include purpleHover;
 	}
 
+	&__btns {
+		display: flex;
+		position: absolute;
+		top: remCalc( 30 );
+		right: remCalc( 30 );
+		
+		opacity: 0;
+		visibility: hidden;
+
+		@include simpleTransition;
+
+		#{$block}:hover & {
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+
+	&__btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: remCalc( 45 );
+		height: remCalc( 45 );
+		margin-left: remCalc( 18 );
+		border-radius: 50%;
+
+		@include purpleHover;
+
+		&__icon {
+			display: block;
+			width: remCalc( 18 );
+			height: remCalc( 18 );
+
+			& svg {
+				fill: white;
+			}
+		}		
+	}
 
 }

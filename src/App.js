@@ -4,7 +4,6 @@ import './scss/app.scss';
 // components
 import Movielist from './components/Movielist';
 import Nav from './components/Nav';
-import BtnAdder from './components/BtnAdder';
 import PopupDetail from './components/PopupDetail';
 import PopupAdder from './components/PopupAdder';
 
@@ -20,9 +19,10 @@ class App extends Component {
 		detailActive: 	false,
 		activeMovieId: 	0,
 		
-		showWatched: 	true,
-		moviesToWatch: 	[],
-		moviesWatched: 	[]
+		isLoadingMovies: 	false,
+		showWatched: 		false,
+		moviesToWatch: 		[],
+		moviesWatched: 		[]
 	}
 
 
@@ -31,20 +31,47 @@ class App extends Component {
 			moviesToWatch = [],
 			moviesWatched = [];
 
+		// show loading animation
+		this.setState({
+			isLoadingMovies: true
+		});
+
 		movies.then( response => {
-			response.forEach( movie => {
-				if( movie.to_watch ) {
-					moviesToWatch.push( movie );
-				} else {
-					moviesWatched.push( movie );
-				}
-			});
+
+			// movies should be in an array. If object, likely invalid auth
+			if( !Array.isArray( response ) ) {
+				this.maybeShowFetchError( response );
+
+			// otherwise, categorize movies
+			} else {
+				response.forEach( movie => {
+					if( movie.to_watch ) {
+						moviesToWatch.push( movie );
+					} else {
+						moviesWatched.push( movie );
+					}
+				});
+
+				this.setState({
+					moviesToWatch: 		moviesToWatch,
+					moviesWatched: 		moviesWatched
+				});				
+			}
 
 			this.setState({
-				moviesToWatch: moviesToWatch,
-				moviesWatched: moviesWatched
+				isLoadingMovies: false
 			});
 		});
+	}
+
+
+	maybeShowFetchError = arg => {
+		let error = `Sorry, we couldn't fetch movies.`;
+	
+		if( arg.hasOwnProperty( 'message' ) )
+			error = arg.message;
+	
+		alert( error );	
 	}
 
 
@@ -54,12 +81,16 @@ class App extends Component {
 			detailActive: 	false,
 			activeMovieId: 	0,
 			showWatched: 	( e.currentTarget.value === 'watched' )
-		})
+		});
+
+		this.scrollToTop();
 	}
 
 
-	handleBtnAdderClick = e => {
+	handleMovieAdd = e => {
 		this.setState({
+			detailActive: 	false,
+			activeMovieId: 	0,
 			adderActive: 	true,
 		});
 	}
@@ -67,15 +98,54 @@ class App extends Component {
 
 	handleWatchedMovieClick = id => {
 		this.setState({
+			adderActive: 	false,
 			detailActive: 	true,
 			activeMovieId: 	id
 		});
 	}
 
 
-	handleToWatchMovieClick = id => {
-		console.log( id );
+	handleToWatchMovieClick = ( id, action ) => {
+		if( action === 'delete' ) {
+			wpIntegration
+				.deleteMovie( id )
+				.then( response => {
+					if( response ) {
+						this.setState({
+							moviesToWatch: 	this.state.moviesToWatch.filter( item => {
+								return item.id !== id;
+							})
+						});
+					}
+				});			
+
+		} else if( action === 'watched' ) {
+			wpIntegration
+				.setMovieAsWatched( id, true )
+				.then( updatedMovie => {
+					this.setState({
+						showWatched: 	true,
+						moviesWatched: 	[
+							updatedMovie,
+							...this.state.moviesWatched
+						],
+						moviesToWatch: 	this.state.moviesToWatch.filter( item => {
+							return item.id !== id;
+						})
+					});
+
+					this.scrollToTop();
+				});
+		}
 	}	
+
+
+	scrollToTop = () => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		});
+	}
 
 
 	handleClosePopupDetail = e => {
@@ -99,9 +169,9 @@ class App extends Component {
 			.then( newMovie => {
 				if( action === 'toWatch' ) {
 					this.setState({
-						detailActive: 	false,
-						adderActive: 	false,
-						showWatched: 	false,
+						// detailActive: 	false,
+						// adderActive: 	false,
+						// showWatched: 	false,
 						moviesToWatch: 	[
 							newMovie,
 							...this.state.moviesToWatch
@@ -109,25 +179,33 @@ class App extends Component {
 					})
 				} else {
 					this.setState({
-						detailActive: 	false,
-						adderActive: 	false,
-						showWatched: 	true,
+						// detailActive: 	false,
+						// adderActive: 	false,
+						// showWatched: 	true,
 						moviesWatched: 	[
 							newMovie,
 							...this.state.moviesWatched
 						]
 					});
 				}
+
+				// this.scrollToTop();
 			});
 	}
 
 
 	render() {
+		const classes = [ 'app' ];
+
+		if( this.state.isLoadingMovies )
+			classes.push( 'is-loading' );
+
 		return (
-			<main className="app">
+			<main className={ classes.join( ' ' ) }>
 				<Nav
 					showWatched={ this.state.showWatched } 
 					handleTabClick={ this.handleTabClick }
+					handleMovieAdd={ this.handleMovieAdd }
 				/>
 				<Movielist 
 					display={ this.state.showWatched }
@@ -138,9 +216,6 @@ class App extends Component {
 					display={ !this.state.showWatched }
 					movies={ this.state.moviesToWatch }
 					handleMovieClick={ this.handleToWatchMovieClick } 
-				/>
-				<BtnAdder 
-					handleBtnAdderClick={ this.handleBtnAdderClick }
 				/>
 				<PopupDetail
 					isActive={ this.state.detailActive }
