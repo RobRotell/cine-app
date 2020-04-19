@@ -15,23 +15,21 @@ const Nav = props => {
 	return (
 		<nav className="nav">
 			<button 
-				className={ classesBtnWatched.join( ' ' ) }
-				onClick={ props.handleTabClick }
-				value="watched"
-			>Watched</button>
-
-			<button 
 				className={ classesBtnToWatch.join( ' ' ) }
 				onClick={ props.handleTabClick }
 				value="toWatch"
 			>To Watch</button>
 
+			<button 
+				className={ classesBtnWatched.join( ' ' ) }
+				onClick={ props.handleTabClick }
+				value="watched"
+			>Watched</button>
 
 			<button
 				className="nav__adder"
 				onClick={ props.handleMovieAdd }
 			></button>
-
 		</nav>
 	)
 

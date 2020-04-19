@@ -15,6 +15,8 @@ class App extends Component {
 
 	state = {
 		adderActive: 	false,
+		adderSearching: false,
+		addResults: 	[],
 
 		detailActive: 	false,
 		activeMovieId: 	0,
@@ -37,14 +39,10 @@ class App extends Component {
 		});
 
 		movies.then( response => {
-
-			// movies should be in an array. If object, likely invalid auth
-			if( !Array.isArray( response ) ) {
-				this.maybeShowFetchError( response );
-
-			// otherwise, categorize movies
+			if( response.success !== true ) {
+				this.showFetchError( response );
 			} else {
-				response.forEach( movie => {
+				response.data.forEach( movie => {
 					if( movie.to_watch ) {
 						moviesToWatch.push( movie );
 					} else {
@@ -55,7 +53,7 @@ class App extends Component {
 				this.setState({
 					moviesToWatch: 		moviesToWatch,
 					moviesWatched: 		moviesWatched
-				});				
+				});	
 			}
 
 			this.setState({
@@ -65,11 +63,16 @@ class App extends Component {
 	}
 
 
-	maybeShowFetchError = arg => {
-		let error = `Sorry, we couldn't fetch movies.`;
-	
-		if( arg.hasOwnProperty( 'message' ) )
-			error = arg.message;
+	showFetchError = message => {
+		let error;
+
+		if( typeof( message ) === 'string' ) {
+			error = message;
+		} else if( typeof( message ) === 'object' && message.hasOwnProperty( 'error' ) ) {
+			error = message.error;
+		} else {
+			error = 'Unknown error occurred';
+		}
 	
 		alert( error );	
 	}
@@ -110,7 +113,10 @@ class App extends Component {
 			wpIntegration
 				.deleteMovie( id )
 				.then( response => {
-					if( response ) {
+					if( response.success !== true ) {
+						console.log( response );
+						this.showFetchError( response );
+					} else {
 						this.setState({
 							moviesToWatch: 	this.state.moviesToWatch.filter( item => {
 								return item.id !== id;
@@ -122,19 +128,23 @@ class App extends Component {
 		} else if( action === 'watched' ) {
 			wpIntegration
 				.setMovieAsWatched( id, true )
-				.then( updatedMovie => {
-					this.setState({
-						showWatched: 	true,
-						moviesWatched: 	[
-							updatedMovie,
-							...this.state.moviesWatched
-						],
-						moviesToWatch: 	this.state.moviesToWatch.filter( item => {
-							return item.id !== id;
-						})
-					});
+				.then( response => {
+					if( response.success !== true ) {
+						this.showFetchError( response );
+					} else {
+						this.setState({
+							showWatched: 	true,
+							moviesWatched: 	[
+								response.data,
+								...this.state.moviesWatched
+							],
+							moviesToWatch: 	this.state.moviesToWatch.filter( item => {
+								return item.id !== id;
+							})
+						});
 
-					this.scrollToTop();
+						this.scrollToTop();
+					}
 				});
 		}
 	}	
@@ -166,30 +176,58 @@ class App extends Component {
 	handleAddClick = ( id, action ) => {
 		wpIntegration
 			.addMovie( id, action )
-			.then( newMovie => {
-				if( action === 'toWatch' ) {
-					this.setState({
-						// detailActive: 	false,
-						// adderActive: 	false,
-						// showWatched: 	false,
-						moviesToWatch: 	[
-							newMovie,
-							...this.state.moviesToWatch
-						]
-					})
+			.then( response => {
+				if( response.success !== true ) {
+					this.showFetchError( response );
 				} else {
-					this.setState({
-						// detailActive: 	false,
-						// adderActive: 	false,
-						// showWatched: 	true,
-						moviesWatched: 	[
-							newMovie,
-							...this.state.moviesWatched
-						]
-					});
-				}
+					if( action === 'toWatch' ) {
+						this.setState({
+							detailActive: 	false,
+							adderActive: 	false,
+							adderSearching: false,
+							addResults: 	[],							
+							showWatched: 	false,
+							moviesToWatch: 	[
+								response.data,
+								...this.state.moviesToWatch
+							]
+						})
+					} else {
+						this.setState({
+							detailActive: 	false,
+							adderActive: 	false,
+							adderSearching: false,
+							addResults: 	[],							
+							showWatched: 	true,
+							moviesWatched: 	[
+								response.data,
+								...this.state.moviesWatched
+							]
+						});
+					}
 
-				// this.scrollToTop();
+					this.scrollToTop();
+				}
+			});
+	}
+
+
+	handleAddInput = value => {
+		this.setState({
+			adderSearching: true
+		});
+
+		wpIntegration
+			.searchByTitle( value )
+			.then( response => {
+				if( response.success !== true ) {
+					this.showFetchError( response );
+				} else {				
+					this.setState({
+						adderSearching: false,
+						addResults: response.data
+					})
+				}
 			});
 	}
 
@@ -224,8 +262,11 @@ class App extends Component {
 				/>
 				<PopupAdder
 					isActive={ this.state.adderActive }
+					isSearching={ this.state.adderSearching }
 					closeAdder={ this.handleClosePopupAdder }
 					handleAddClick={ this.handleAddClick }
+					handleAddInput={ this.handleAddInput }
+					addResults={ this.state.addResults }
 				/>
 			</main>
 		);

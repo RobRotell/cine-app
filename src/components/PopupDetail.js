@@ -30,12 +30,16 @@ class PopupDetail extends React.Component {
 		// fetch movie details
 		wpIntegration
 			.getMovie( id )
-			.then( movie => {
-				this.setState({
-					isLoading: 		false,
-					isLoaded: 		true,
-					activeMovie: 	movie
-				});
+			.then( response => {
+				if( response.success !== true ) {
+					return false
+				} else {
+					this.setState({
+						isLoading: 		false,
+						isLoaded: 		true,
+						activeMovie: 	response.data
+					});
+				}
 			});
 	}
 
@@ -56,10 +60,7 @@ class PopupDetail extends React.Component {
 				
 			if( movie.hasOwnProperty( 'box_office' ) && this.isValidValue( movie.box_office ) )
 				details[ 'Box Office' ] = movie.box_office;	
-				
-			// if( movie.hasOwnProperty( 'website' ) && this.isValidValue( movie.website ) )
-			// 	details.Website = movie.website;
-			
+
 			return (
 				<article className="watched">
 					<LazyImg

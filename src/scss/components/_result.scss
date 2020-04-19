@@ -86,7 +86,7 @@
 			visibility: visible;
 		}
 
-		&:hover {
+		&:hover:not([disabled]) {
 			background-color: $purpleViv;
 		}			
 
@@ -96,6 +96,11 @@
 			& svg {
 				fill: $white;
 			}
+		}
+
+		&--disabled { 
+			cursor: not-allowed;
+			background-color: $grayText;
 		}
 	}
 

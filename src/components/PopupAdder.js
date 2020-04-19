@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Result from './Result';
-import wpIntegration from '../helpers/wpIntegration';
 
 
 class PopupAdder extends React.Component {
@@ -28,19 +27,19 @@ class PopupAdder extends React.Component {
 			return;
 
 		// what should show in results panel?
-		if( this.state.isSearching ) {
+		if( this.props.isSearching ) {
 			return (
 				<div className="popup__results__searching"></div>
 			)
 		} else {
-			if( this.state.matches.length === 0 ) {
+			if( this.props.addResults.length === 0 ) {
 				return (
 					<p className="popup__results__no-results">No matches found.</p>
 				);
 			} else {
 				return (
 					<section className="popup__results__results">
-						{ this.state.matches.map( item =>
+						{ this.props.addResults.map( item =>
 							<Result 
 								key={ item.id }
 								id={ item.id }
@@ -48,6 +47,7 @@ class PopupAdder extends React.Component {
 								content={ item.description }
 								year={ item.year } 
 								poster={ item.poster }
+								status={ item.status }
 								handleAddClick={ this.props.handleAddClick }
 							/>
 						)}
@@ -64,32 +64,11 @@ class PopupAdder extends React.Component {
 
 		// clear previous timeout (if within half second)
 		clearTimeout( self.searchTimeout );
-		if( value.length > 3 ) {
+		if( value.length >= 3 ) {
 			self.searchTimeout = setTimeout( () => {
-
-				// for loading animation
-				this.setState({
-					isSearching: true
-				});
-
-				// fetch matches from endpoint
-				self.getMatchesFromWp( value );
+				self.props.handleAddInput( value );
 			}, 500 );
 		}
-	}
-
-
-	getMatchesFromWp = value => {
-		const self = this;
-
-		wpIntegration
-			.searchByTitle( value )
-			.then( matches => {
-				self.setState({
-					isSearching: 	false,
-					matches: 		matches
-				})
-			});
 	}
 
  
@@ -127,8 +106,11 @@ class PopupAdder extends React.Component {
 
 PopupAdder.propTypes = {
 	isActive: 			PropTypes.bool.isRequired,
+	isSearching: 		PropTypes.bool.isRequired,
+	addResults: 		PropTypes.array.isRequired,
 	closeAdder: 		PropTypes.func.isRequired,
-	handleAddClick: 	PropTypes.func.isRequired
+	handleAddClick: 	PropTypes.func.isRequired,
+	handleAddInput: 	PropTypes.func.isRequired,
 }
 
 

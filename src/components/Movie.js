@@ -20,6 +20,24 @@ class Movie extends React.Component {
 		title.style.transform = 'none';
 	}
 
+
+	renderImage = () => {
+		if( typeof( this.props.backdrop ) !== 'undefined' && this.props.backdrop !== null ) {
+			return (
+				<LazyImg
+					classNames="block__img"
+					alt={ this.props.title }
+					url={ this.props.backdrop }
+				/>
+			)
+		} else {
+			return (
+				<span className="block__img block__img--missing"></span>
+			)
+		}
+	}
+
+
 	render() {
 		return (
 			<article 
@@ -41,12 +59,7 @@ class Movie extends React.Component {
 						</div>
 					</div>
 				</div>
-				
-				<LazyImg
-					classNames="block__img"
-					alt={ this.props.title }
-					url={ this.props.backdrop }
-				/>
+				{ this.renderImage() }
 			</article>
 		)
 	}
@@ -58,7 +71,7 @@ Movie.propTypes = {
 	title: 				PropTypes.string.isRequired,
 	year: 				PropTypes.string.isRequired,
 	director: 			PropTypes.string.isRequired,
-	backdrop: 			PropTypes.string.isRequired,
+	backdrop: 			PropTypes.string,
 	toWatch: 			PropTypes.bool.isRequired,
 	handleMovieClick: 	PropTypes.func.isRequired
 }

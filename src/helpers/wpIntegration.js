@@ -14,14 +14,57 @@ const wpIntegration = {
 	},
 
 
+	makeRequest( method, slug, params ) {
+		let endpoint = '',
+			body = null;
+
+		if( method !== 'GET' && method !== 'PUT' && method !== 'DELETE' && method !== 'POST' )
+			return false;
+
+		if( method === 'GET' ) {
+			endpoint = `${this.apiUrl}/${slug}?${params.toString()}`;
+		
+		} else {
+			endpoint = `${this.apiUrl}/${slug}`;
+
+			body = {
+				method:		method,
+				headers: 	{ 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: 		params
+			}
+		}
+
+		return fetch( endpoint, body )
+			.then( async response => {
+				const result = {
+					success: 	null,
+					data: 		null,
+					error: 		null
+				};
+
+				if( response.status === 400 ) {
+					result.success = false;
+
+					await response.json().then( error => {
+						if( error.hasOwnProperty( 'message' ) && error.message.length )
+							result.error = error.message;
+					});
+
+				} else {
+					result.success = true;
+					result.data = await response.json();
+				}
+
+				return result;
+			});
+	},
+
+
 	getMovies() {
 		const params = new URLSearchParams();
 		params.append( 'auth', this.getAuth() );
 
-		let endpoint = `${this.apiUrl}/get-movies?${ params.toString() }`;
-
-		return fetch( endpoint )
-			.then( response => response.json() );
+		return this.makeRequest( 'GET', 'get-movies', params );
 	},
 
 
@@ -30,10 +73,7 @@ const wpIntegration = {
 		params.append( 'auth', this.getAuth() );
 		params.append( 'id', id );
 
-		let endpoint = `${this.apiUrl}/get-movie-by-id?${ params.toString() }`;
-
-		return fetch( endpoint )
-			.then( response => response.json() );
+		return this.makeRequest( 'GET', 'get-movie-by-id', params );
 	},
 
 
@@ -43,28 +83,17 @@ const wpIntegration = {
 		params.append( 'title', value );
 		params.append( 'limit', 10 );
 
-		let endpoint = `${this.apiUrl}/search-by-title?${ params.toString() }`;
-
-		return fetch( endpoint )
-			.then( response => response.json() );
+		return this.makeRequest( 'GET', 'search-by-title', params );
 	},
 
 
 	addMovie( id, action ) {
-		const formData = new FormData();
-		formData.append( 'auth', this.getAuth() );
-		formData.append( 'id', id );
-		formData.append( 'to_watch', ( action === 'toWatch' ) );
+		const params = new URLSearchParams();
+		params.append( 'auth', this.getAuth() );
+		params.append( 'id', id );
+		params.append( 'to_watch', ( action === 'toWatch' ) );
 
-		let endpoint = `${this.apiUrl}/add-movie-by-id`;
-
-		return fetch(
-			endpoint,
-			{
-				method: 'POST',
-				body: 	formData
-			}
-		).then( response => response.json() );
+		return this.makeRequest( 'POST', 'add-movie-by-id', params );
 	},
 
 
@@ -74,14 +103,7 @@ const wpIntegration = {
 		params.append( 'id', id );
 		params.append( 'status', status );
 
-		return fetch(
-			`${this.apiUrl}/set-movie-as-watched`,
-			{
-				method:		'PUT',
-				headers: 	{ 'Content-Type': 'application/x-www-form-urlencoded' },
-				body: 		params
-			}
-		).then( response => response.json() );
+		return this.makeRequest( 'PUT', 'set-movie-as-watched', params );
 	},
 
 
@@ -90,14 +112,7 @@ const wpIntegration = {
 		params.append( 'auth', this.getAuth() );
 		params.append( 'id', id );
 
-		return fetch(
-			`${this.apiUrl}/delete-movie`,
-			{
-				method:		'DELETE',
-				headers: 	{ 'Content-Type': 'application/x-www-form-urlencoded' },
-				body: 		params
-			}
-		).then( response => response.json() );
+		return this.makeRequest( 'DELETE', 'delete-movie', params );
 	}
 
 
